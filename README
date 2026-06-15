@@ -1,0 +1,80 @@
+# Craftora API
+
+A vocational LMS backend for trades and vocational instructors across Africa. Instructors create and monetize courses. Students enroll, track progress, and access content securely.
+
+---
+
+## Tech Stack
+
+- **Node.js / TypeScript / Express**
+- **PostgreSQL + Prisma**
+- **Redis + BullMQ**
+- **Cloudinary** — video storage with signed URLs
+- **Paystack** — enrollment payments + instructor payouts
+- **JWT** — access & refresh token auth
+
+---
+
+## Getting Started
+
+```bash
+git clone https://github.com/your-username/craftora_api.git
+cd craftora_api
+npm install
+cp .env.example .env
+npx prisma migrate dev
+npm run dev
+```
+
+---
+
+## Environment Variables
+
+```env
+NODE_ENV=development
+PORT=3000
+DATABASE_URL=
+JWT_ACCESS_SECRET=
+JWT_REFRESH_SECRET=
+REDIS_URL=
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+PAYSTACK_SECRET_KEY=
+PAYSTACK_WEBHOOK_SECRET=
+SMTP_HOST=
+SMTP_PORT=
+SMTP_USER=
+SMTP_PASS=
+```
+
+---
+
+## Core Features
+
+- JWT auth with refresh token rotation
+- Email verification & password reset
+- Role-based access (Student, Instructor, Moderator, Admin)
+- Course → Module → Lesson structure with locked progression
+- Free first-lesson preview
+- Cloudinary video uploads with signed expiring URLs
+- Paystack payments + automated instructor payouts
+- BullMQ email queue
+- Lesson-level progress tracking
+
+---
+
+## Deployment
+
+Hosted on **Render**. Redis on **Railway**.
+
+Build command:
+```bash
+npm install && npx prisma generate && npx prisma migrate deploy && npm run build
+```
+
+---
+
+## Author
+
+**Babajide** — Backend Developer

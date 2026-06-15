@@ -1,0 +1,239 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+   url      = env("DATABASE_URL")
+}
+
+
+// ENUMS
+
+enum Role {
+  STUDENT
+  INSTRUCTOR
+  MODERATOR
+  ADMIN
+}
+
+enum CourseStatus {
+  DRAFT
+  PENDING_REVIEW
+  PUBLISHED
+  REJECTED
+}
+
+enum EnrollmentStatus {
+  PENDING
+  ACTIVE
+  FAILED
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  PAID
+  FAILED
+}
+
+
+// USER
+
+model User {
+  id         String    @id @default(uuid())
+  email      String    @unique
+  password   String
+  firstName  String
+  lastName   String
+  role       Role
+  verifiedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relations
+  instructorProfile  InstructorProfile?
+  refreshTokens      RefreshToken[]
+  verificationToken  VerificationToken?
+  passwordResetToken PasswordResetToken?
+  enrollments        Enrollment[]
+  progress           LessonProgress[]
+  payoutRequests     PayoutRequest[]
+}
+
+// REFRESH TOKEN
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  expiresAt DateTime
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// VERIFICATION TOKEN
+
+model VerificationToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  expiresAt DateTime
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+// PASSWORD RESET TOKEN
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  expiresAt DateTime
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+// INSTRUCTOR PROFILE
+
+model InstructorProfile {
+  id                    String  @id @default(uuid())
+  bio                   String?
+  trade                 String
+  paystackRecipientCode String?
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relations
+  courses Course[]
+}
+
+// COURSE
+
+model Course {
+  id            String       @id @default(uuid())
+  title         String
+  description   String
+  price         Int
+  status        CourseStatus @default(DRAFT)
+  coverImageUrl String?
+
+  instructorProfileId String
+  instructorProfile   InstructorProfile @relation(fields: [instructorProfileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relations
+  modules     Module[]
+  enrollments Enrollment[]
+}
+
+// MODULE
+
+model Module {
+  id    String @id @default(uuid())
+  title String
+  order Int
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relations
+  lessons Lesson[]
+}
+
+// LESSON
+
+model Lesson {
+  id            String  @id @default(uuid())
+  title         String
+  order         Int
+  videoUrl      String
+  duration      Int?
+  isFreePreview Boolean @default(false)
+
+  moduleId String
+  module   Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relations
+  progress LessonProgress[]
+}
+
+// ENROLLMENT
+
+model Enrollment {
+  id                String           @id @default(uuid())
+  status            EnrollmentStatus @default(PENDING)
+  paystackReference String           @unique
+  amountPaid        Int
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, courseId])
+}
+
+// LESSON PROGRESS
+
+model LessonProgress {
+  id          String   @id @default(uuid())
+  completedAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  lessonId String
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+}
+
+// PAYOUT REQUEST
+
+model PayoutRequest {
+  id                 String       @id @default(uuid())
+  amount             Int
+  status             PayoutStatus @default(PENDING)
+  paystackTransferId String?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
