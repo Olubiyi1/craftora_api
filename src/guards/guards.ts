@@ -9,6 +9,14 @@ interface TokenPayload {
   role: string;
 }
 
+export interface JwtPayload {
+  id: string;
+  email: string;
+  role: string;
+  iat: number;
+  exp: number;
+}
+
 interface RefreshTokenResult {
   refreshToken: string;
   hashedToken: string;
@@ -32,6 +40,11 @@ class Guards {
     );
     return token;
   };
+
+  static verifyAccesToken = (token:string):JwtPayload=>{
+    return jwt.verify(token,config.secret_key) as JwtPayload
+  };
+
   static comparePassword = async(password:string,hashPassword:string):Promise<boolean>=>{
     return await bcrypt.compare(password,hashPassword)
   }
