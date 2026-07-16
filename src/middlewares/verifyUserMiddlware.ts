@@ -22,7 +22,7 @@ export const verifyLoggedInUser = (
   }
 };
 
-export const verufyUserByEmail = async (
+export const verifyUserByEmail = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction,

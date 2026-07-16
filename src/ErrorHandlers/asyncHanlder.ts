@@ -7,3 +7,5 @@ export const asyncHandler = (fn: RequestHandler): RequestHandler => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
 };
+
+
