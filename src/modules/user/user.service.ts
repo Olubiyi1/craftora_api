@@ -8,8 +8,7 @@ import { IAuthService } from "../auth/contracts/auth.contract";
 import { User } from "../../generated/prisma/client";
 import { LoginDto } from "../auth/dto/login.dto";
 import { IUserService } from "./contracts/user.contract";
-import { FindUserByEmailDto } from "./dto/findUserByEmail";
-import { FindUserById } from "./dto/findUserById";
+
 
 
 //safe shape for anything going back to the client
@@ -22,10 +21,10 @@ class UserService implements IUserService{
     async createUser(data: CreateUserDto): Promise<User> {
         
     }
-    async findUserByEmail(email: FindUserByEmailDto): Promise<User | null> {
+    async findUserByEmail(email: string): Promise<User | null> {
         
     }
-    async findUserById(id: FindUserById): Promise<User | null> {
+    async findUserById(id: string): Promise<User | null> {
         
     }
 }
