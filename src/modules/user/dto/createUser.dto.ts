@@ -7,4 +7,3 @@ export interface CreateUserDto{
     password:string,
     role?:Role
 }
-
