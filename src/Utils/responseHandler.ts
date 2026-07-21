@@ -1,7 +1,7 @@
 import { Response } from "express";
 
 class ResponseHandler {
-  static ok(res: Response, message: string = "Success", data: unknown = null) {
+  static success(res: Response, message: string = "Success", data: unknown = null) {
     return res.status(200).json({
       status: "success",
       message,

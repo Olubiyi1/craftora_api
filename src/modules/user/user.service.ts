@@ -9,22 +9,55 @@ import { User } from "../../generated/prisma/client";
 import { LoginDto } from "../auth/dto/login.dto";
 import { IUserService } from "./contracts/user.contract";
 
-
-
 //safe shape for anything going back to the client
 // this would be returned in place of all the data that might include the password
-export type SafeUser = Omit <User,"password">
+export type SafeUser = Omit<User, "password">;
 
-const serviceLog = createLabel("SERVICE")
+const serviceLog = createLabel("SERVICE");
 
-class UserService implements IUserService{
-    async createUser(data: CreateUserDto): Promise<User> {
-        
+class UserService implements IUserService {
+  async createUser(data: CreateUserDto): Promise<SafeUser> {
+    const  existingUser  = await prisma.user.findUnique({
+      where: { email: data.email },
+    });
+
+    if (existingUser) {
+      serviceLog.warn(`User with email ${data.email} exists`);
+      throw new AppError("Email already exists", 409);
     }
-    async findUserByEmail(email: string): Promise<User | null> {
-        
+
+    const hashedPassword = Guards.hashPassword(data.password);
+
+    const user = await prisma.user.create({
+      data: {
+        ...data,
+        password: hashedPassword,
+      },
+    });
+    const {password,...safeUser} = user
+    serviceLog.info(`user successfully registered`)
+    return safeUser;
+  }
+
+  async findUserByEmail(email: string): Promise<User | null> {
+    const user = await prisma.user.findUnique({where:{email}})
+    if(!user){
+        serviceLog.warn(`user with ${email} does not exist`)
+        return null
     }
-    async findUserById(id: string): Promise<User | null> {
-        
+    serviceLog.info(`user with ${email} found`)
+    return user
+  }
+
+  async findUserById(id: string): Promise<User | null> {
+    const user = await prisma.user.findUnique({where:{id}})
+    if(!user){
+        serviceLog.warn(`user with id :${id} does not exist`)
+        return null
     }
+    serviceLog.info(`user with id : ${id} found`)
+    return user;
+  }
 }
+
+export default UserService;

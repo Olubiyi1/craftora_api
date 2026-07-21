@@ -14,3 +14,7 @@ configured redis to run on my local and set maxRetries to 3
 set up errorHandlers... appError is a custom error class used to create structured, predictable errors in a Node.js/Express app.
 when encountered with datasource error, include the url pointing to the evn db_Url
 ensure your dotenv is always imported first in your server
+did monolitic modular architecture
+separated auth from user as standalone
+implement dtos and contracts
+typescript doesnt auto remove the password cos i defined safeuser

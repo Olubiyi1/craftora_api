@@ -6,7 +6,7 @@ import { ResetPasswordDto } from "../dto/resetPassword.dto";
 
 
 export interface IAuthService{
-    register(data:RegisterDto):Promise<{user:SafeUser;tokens:Tokens}>
+    register(data:RegisterDto):Promise<SafeUser>
     login(data:LoginDto):Promise<{user:SafeUser;tokens:Tokens}>
     forgotPassword(email:string):Promise<void>
     resetPassword(data:ResetPasswordDto):Promise<void>

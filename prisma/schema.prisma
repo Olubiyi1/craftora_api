@@ -52,7 +52,7 @@ model User {
   password   String
   firstName  String
   lastName   String
-  role       Role
+  role       Role @default(STUDENT)
   verifiedAt DateTime?
 
   createdAt DateTime @default(now())

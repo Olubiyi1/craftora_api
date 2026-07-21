@@ -300,7 +300,7 @@ export type UserCreateInput = {
   password: string
   firstName: string
   lastName: string
-  role: $Enums.Role
+  role?: $Enums.Role
   verifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -319,7 +319,7 @@ export type UserUncheckedCreateInput = {
   password: string
   firstName: string
   lastName: string
-  role: $Enums.Role
+  role?: $Enums.Role
   verifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -376,7 +376,7 @@ export type UserCreateManyInput = {
   password: string
   firstName: string
   lastName: string
-  role: $Enums.Role
+  role?: $Enums.Role
   verifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -567,7 +567,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   password: string
   firstName: string
   lastName: string
-  role: $Enums.Role
+  role?: $Enums.Role
   verifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -585,7 +585,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   password: string
   firstName: string
   lastName: string
-  role: $Enums.Role
+  role?: $Enums.Role
   verifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -655,7 +655,7 @@ export type UserCreateWithoutVerificationTokenInput = {
   password: string
   firstName: string
   lastName: string
-  role: $Enums.Role
+  role?: $Enums.Role
   verifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -673,7 +673,7 @@ export type UserUncheckedCreateWithoutVerificationTokenInput = {
   password: string
   firstName: string
   lastName: string
-  role: $Enums.Role
+  role?: $Enums.Role
   verifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -743,7 +743,7 @@ export type UserCreateWithoutPasswordResetTokenInput = {
   password: string
   firstName: string
   lastName: string
-  role: $Enums.Role
+  role?: $Enums.Role
   verifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -761,7 +761,7 @@ export type UserUncheckedCreateWithoutPasswordResetTokenInput = {
   password: string
   firstName: string
   lastName: string
-  role: $Enums.Role
+  role?: $Enums.Role
   verifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -831,7 +831,7 @@ export type UserCreateWithoutInstructorProfileInput = {
   password: string
   firstName: string
   lastName: string
-  role: $Enums.Role
+  role?: $Enums.Role
   verifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -849,7 +849,7 @@ export type UserUncheckedCreateWithoutInstructorProfileInput = {
   password: string
   firstName: string
   lastName: string
-  role: $Enums.Role
+  role?: $Enums.Role
   verifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -919,7 +919,7 @@ export type UserCreateWithoutEnrollmentsInput = {
   password: string
   firstName: string
   lastName: string
-  role: $Enums.Role
+  role?: $Enums.Role
   verifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -937,7 +937,7 @@ export type UserUncheckedCreateWithoutEnrollmentsInput = {
   password: string
   firstName: string
   lastName: string
-  role: $Enums.Role
+  role?: $Enums.Role
   verifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1007,7 +1007,7 @@ export type UserCreateWithoutProgressInput = {
   password: string
   firstName: string
   lastName: string
-  role: $Enums.Role
+  role?: $Enums.Role
   verifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1025,7 +1025,7 @@ export type UserUncheckedCreateWithoutProgressInput = {
   password: string
   firstName: string
   lastName: string
-  role: $Enums.Role
+  role?: $Enums.Role
   verifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1095,7 +1095,7 @@ export type UserCreateWithoutPayoutRequestsInput = {
   password: string
   firstName: string
   lastName: string
-  role: $Enums.Role
+  role?: $Enums.Role
   verifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1113,7 +1113,7 @@ export type UserUncheckedCreateWithoutPayoutRequestsInput = {
   password: string
   firstName: string
   lastName: string
-  role: $Enums.Role
+  role?: $Enums.Role
   verifiedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
