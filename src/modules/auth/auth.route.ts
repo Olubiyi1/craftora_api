@@ -1,9 +1,11 @@
 import authController from "./auth.controller";
 import { Router } from "express";
-import validate from "../../middlewares/validationMiddleware";
-import { registerUserValidationSchema } from "./auth.validation";
+import {validateBody,validateId} from "../../middlewares/validationMiddlewares";
+import { registerUserValidationSchema,loginValidationSchema } from "./auth.validation";
 
 
-const router = Router()
 
-router.post("/",validate(registerUserValidationSchema),authController.registerUser)
+const authRouter = Router()
+
+authRouter.post("/register",validateBody(registerUserValidationSchema),authController.registerUser)
+authRouter.post("/login",validateBody(loginValidationSchema),authController.loginUser)

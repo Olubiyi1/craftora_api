@@ -61,7 +61,7 @@ model User {
   // relations
   instructorProfile  InstructorProfile?
   refreshTokens      RefreshToken[]
-  verificationToken  VerificationToken?
+  emailVerificationToken  EmailVerificationToken?
   passwordResetToken PasswordResetToken?
   enrollments        Enrollment[]
   progress           LessonProgress[]
@@ -84,11 +84,11 @@ model RefreshToken {
   @@index([userId])
 }
 
-// VERIFICATION TOKEN
+// Email VERIFICATION TOKEN
 
-model VerificationToken {
+model EmailVerificationToken {
   id        String   @id @default(uuid())
-  token     String   @unique
+  tokenHash     String   @unique
   expiresAt DateTime
 
   userId String @unique
@@ -101,7 +101,7 @@ model VerificationToken {
 
 model PasswordResetToken {
   id        String   @id @default(uuid())
-  token     String   @unique
+  tokenHash     String   @unique
   expiresAt DateTime
 
   userId String @unique

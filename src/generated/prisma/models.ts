@@ -10,7 +10,7 @@
  */
 export type * from './models/User'
 export type * from './models/RefreshToken'
-export type * from './models/VerificationToken'
+export type * from './models/EmailVerificationToken'
 export type * from './models/PasswordResetToken'
 export type * from './models/InstructorProfile'
 export type * from './models/Course'
