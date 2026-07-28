@@ -1,52 +1,41 @@
-import { addColors, createLogger, format, transports } from "winston";
-import { TransformableInfo } from "logform";
-import { WinstonTransport as AxiomTransport } from "@axiomhq/winston";
+import { createLogger, format, transports, addColors } from "winston";
 import { once } from "events";
 
-//logform is a dependency in winston so it's always part
-//of the package installed alongside winston
-
 addColors({
-  info: "blue",
-  warn: "yellow",
   error: "red",
+  warn: "yellow",
+  info: "blue",
   debug: "gray",
 });
 
-type LogInfo = TransformableInfo & {
-  timestamp: string;
-  label: string;
-};
-
 const consoleFormat = format.combine(
-  format.colorize({ all: true }),
-  format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
-  format.printf((info) => {
-    return `${info.timestamp} [${info.level.toUpperCase()}] [${info.label}] ${info.message}`;
+  format.timestamp({
+    format: "YYYY-MM-DD HH:mm:ss",
   }),
-);
+  format.colorize({ level: true }),
+  format.errors({ stack: true }),
+  format.printf(({ timestamp, level, label, message, stack }) => {
+    const source = label ?? "Craftora API";
 
-const axiomFormat = format.combine(
-    format.timestamp({format:"YYYY-MM-DD HH:mm:ss"}),
-    format.json()
+    if (stack) {
+      return `${timestamp} [${level}] [${source}] ${message}\n${stack}`;
+    }
+
+    return `${timestamp} [${level}] [${source}] ${message}`;
+  })
 );
 
 export const logger = createLogger({
-    level: "info",
-    transports:[
-        new transports.Console({
-            format:consoleFormat,
-        }),
-        // new AxiomTransport({
-        
-            //this is for axiom cloud logging destination
-        // })
-    ]
-})
+  level: process.env.NODE_ENV === "production" ? "info" : "debug",
+  transports: [
+    new transports.Console({
+      format: consoleFormat,
+    }),
+  ],
+  exitOnError: false,
+});
 
 export const exitAfterFlush = async () => {
   logger.end();
   await once(logger, "finish");
 };
-
-

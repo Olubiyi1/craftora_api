@@ -4,12 +4,11 @@ import AppError from "../../errorHandlers/appError";
 import Guards from "../../guards/guards";
 import { Role } from "../../generated/prisma/enums";
 import { CreateUserDto } from "./dto/createUser.dto";
-import { IAuthService } from "../auth/contracts/auth.contract";
 import { User } from "../../generated/prisma/client";
-import { LoginDto } from "../auth/dto/login.dto";
 import { IUserService } from "./contracts/user.contract";
+import { UpdateUseDto } from "./dto/updateUser.Dto";
 
-//safe shape for anything going back to the client
+//safeuser shape for anything going back to the client
 // this would be returned in place of all the data that might include the password
 export type SafeUser = Omit<User, "password">;
 
@@ -17,7 +16,7 @@ const serviceLog = createLabel("SERVICE");
 
 class UserService implements IUserService {
   async createUser(data: CreateUserDto): Promise<SafeUser> {
-    const  existingUser  = await prisma.user.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: { email: data.email },
     });
 
@@ -34,29 +33,39 @@ class UserService implements IUserService {
         password: hashedPassword,
       },
     });
-    const {password,...safeUser} = user
-    serviceLog.info(`user successfully registered`)
+    const { password, ...safeUser } = user;
+    serviceLog.info(`user successfully registered`);
     return safeUser;
   }
 
   async findUserByEmail(email: string): Promise<User | null> {
-    const user = await prisma.user.findUnique({where:{email}})
-    if(!user){
-        serviceLog.warn(`user with ${email} does not exist`)
-        return null
-    }
-    serviceLog.info(`user with ${email} found`)
-    return user
+    const user = await prisma.user.findUnique({ where: { email } });
+    return user;
   }
 
   async findUserById(id: string): Promise<User | null> {
-    const user = await prisma.user.findUnique({where:{id}})
-    if(!user){
-        serviceLog.warn(`user with id :${id} does not exist`)
-        return null
-    }
-    serviceLog.info(`user with id : ${id} found`)
+    const user = await prisma.user.findUnique({ where: { id } });
     return user;
+  }
+
+  async updateuser(id: string, data: UpdateUseDto): Promise<SafeUser | null> {
+    const user = await prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      serviceLog.warn(`user with id :${id} does not exist`);
+      return null;
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: {
+        firstName: data.firstName,
+        lastName: data.lastName,
+      },
+    });
+    const { password, ...safeUser } = updatedUser;
+
+    serviceLog.info(`user with id: ${id} updated successfully`);
+    return safeUser;
   }
 }
 

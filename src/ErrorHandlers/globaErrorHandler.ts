@@ -1,5 +1,6 @@
-import { Response,Request,NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import AppError from "./appError";
+import { logger } from "../utils/logger";
 
 export const globalErrorHandler = (
   err: AppError,
@@ -11,6 +12,11 @@ export const globalErrorHandler = (
   err.status = err.status || "error";
   err.message = err.message || "Something went wrong!";
 
+  // Only log unexpected errors here
+  if (!err.isOperational) {
+    logger.error(`${err.message}\n${err.stack}`);
+  }
+
   if (process.env.NODE_ENV === "development") {
     res.status(err.statusCode).json({
       status: err.status,
@@ -18,19 +24,19 @@ export const globalErrorHandler = (
       stack: err.stack,
       error: err,
     });
-  } else {
-    // Production - only send operational errors to client
-    if (err.isOperational) {
-      res.status(err.statusCode).json({
-        status: err.status,
-        message: err.message,
-      });
-    } else {
-      console.error("ERROR", err);
-      res.status(500).json({
-        status: "error",
-        message: "Something went wrong!",
-      });
-    }
+    return;
   }
+
+  if (err.isOperational) {
+    res.status(err.statusCode).json({
+      status: err.status,
+      message: err.message,
+    });
+    return;
+  }
+
+  res.status(500).json({
+    status: "error",
+    message: "Something went wrong!",
+  });
 };

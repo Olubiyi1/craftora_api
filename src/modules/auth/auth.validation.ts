@@ -70,3 +70,31 @@ export const changePasswordValidationSchema = Joi.object({
   .required()
   .messages(validationMessages.password)
 })
+
+export const forgotPasswordSchema = Joi.object({
+   email:Joi.string()
+  .trim()
+  .trim()
+  .lowercase()
+  .email({tlds:{allow:false}})
+  .required()
+  .messages(validationMessages.email)
+})
+
+export const resetPasswordValidationSchema = Joi.object({
+  token: Joi.string()
+    .required()
+    .messages({
+      "string.empty": "Reset token is required",
+      "any.required": "Reset token is required",
+    }),
+
+  newPassword: Joi.string()
+    .min(8)
+    .required()
+    .messages({
+      "string.empty": "New password is required",
+      "string.min": "Password must be at least 8 characters",
+      "any.required": "New password is required",
+    }),
+});

@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import config from "../config/config";
 
-interface TokenPayload {
+export interface TokenPayload {
   id: string;
   email: string;
   role: string;

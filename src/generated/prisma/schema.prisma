@@ -10,9 +10,8 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-   url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
-
 
 // ENUMS
 
@@ -43,7 +42,6 @@ enum PayoutStatus {
   FAILED
 }
 
-
 // USER
 
 model User {
@@ -52,27 +50,27 @@ model User {
   password   String
   firstName  String
   lastName   String
-  role       Role @default(STUDENT)
+  role       Role      @default(STUDENT)
   verifiedAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // relations
-  instructorProfile  InstructorProfile?
-  refreshToken       RefreshToken?
-  emailVerificationToken  EmailVerificationToken?
-  passwordResetToken PasswordResetToken?
-  enrollments        Enrollment[]
-  progress           LessonProgress[]
-  payoutRequests     PayoutRequest[]
+  instructorProfile      InstructorProfile?
+  refreshToken           RefreshToken?
+  emailVerificationToken EmailVerificationToken?
+  passwordResetToken     PasswordResetToken?
+  enrollments            Enrollment[]
+  progress               LessonProgress[]
+  payoutRequests         PayoutRequest[]
 }
 
 // REFRESH TOKEN
 
 model RefreshToken {
   id        String   @id @default(uuid())
-  tokenHash     String   @unique
+  tokenHash String   @unique
   expiresAt DateTime
 
   userId String @unique
@@ -88,7 +86,7 @@ model RefreshToken {
 
 model EmailVerificationToken {
   id        String   @id @default(uuid())
-  tokenHash     String   @unique
+  tokenHash String   @unique
   expiresAt DateTime
 
   userId String @unique
@@ -101,7 +99,7 @@ model EmailVerificationToken {
 
 model PasswordResetToken {
   id        String   @id @default(uuid())
-  tokenHash     String   @unique
+  tokenHash String   @unique
   expiresAt DateTime
 
   userId String @unique
@@ -113,17 +111,16 @@ model PasswordResetToken {
 // INSTRUCTOR PROFILE
 
 model InstructorProfile {
-  id                    String  @id @default(uuid())
-  bio                   String?
-  
-  tradeId                String
-  trade Trade @relation(fields:[tradeId],references:[id],onDelete:Restrict)
+  id  String  @id @default(uuid())
+  bio String?
+
+  tradeId String
+  trade   Trade  @relation(fields: [tradeId], references: [id], onDelete: Restrict)
 
   paystackRecipientCode String?
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

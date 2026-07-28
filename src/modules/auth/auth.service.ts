@@ -12,6 +12,7 @@ import { generateToken, hashToken } from "../../helpers/token.helper";
 import prisma from "../../config/prisma";
 import { ChangePasswordDto } from "./dto/changePassword.dto";
 import { User } from "../../generated/prisma/client";
+import { TokenPayload } from "../../guards/guards";
 
 const authServiceLog = createLabel("AUTH_SERVICE_LOG");
 // creating a new instance if UserService
@@ -66,14 +67,53 @@ class AuthService implements IAuthService {
       throw new AppError(`Invalid Email or Password`, 400);
     }
 
-    if (existingUser.isVerified === null) {
-      authServiceLog.warn("Please verify your email");
-      throw new AppError("Please verify your email", 400);
-    }
+    // if (existingUser.isVerified === null) {
+    //   authServiceLog.warn("Please verify your email");
+    //   throw new AppError("Please verify your email", 400);
+    // }
 
     const { password, ...safeuser } = existingUser;
 
-    return safeuser;
+    const payload = {
+      id: safeuser.id,
+      email: safeuser.email,
+      role: safeuser.role,
+    };
+    const accessToken = Guards.createAccessToken(payload);
+    const { refreshToken, hashedRefreshToken } =
+      Guards.createRefreshToken(payload);
+
+    // single refresh token approach
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const existingToken = await prisma.refreshToken.findUnique({
+      where: { userId: safeuser.id },
+    });
+
+    if (existingToken) {
+      await prisma.refreshToken.update({
+        where: { userId: safeuser.id },
+        data: {
+          tokenHash: hashedRefreshToken,
+          expiresAt,
+        },
+      });
+    } else {
+      await prisma.refreshToken.create({
+        data: {
+          tokenHash: hashedRefreshToken,
+          userId: safeuser.id,
+          expiresAt,
+        },
+      });
+    }
+
+    return {
+      user: safeuser,
+      tokens: {
+        accessToken,
+        refreshToken,
+      },
+    };
   }
 
   // forgotpassword
@@ -82,14 +122,19 @@ class AuthService implements IAuthService {
     const existingUser = await userService.findUserByEmail(email);
 
     if (!existingUser) {
-      authServiceLog.warn(
-        "If an account with that email exists, a password reset email has been sent.",
-      );
+      authServiceLog.warn("Password reset requested for non-existing email");
       return;
     }
 
     const resetToken = generateToken();
     const hashedToken = hashToken(resetToken);
+
+    // Delete any existing reset token for this user
+    await prisma.passwordResetToken.deleteMany({
+      where: {
+        userId: existingUser.id,
+      },
+    });
 
     await prisma.passwordResetToken.create({
       data: {
@@ -107,10 +152,44 @@ class AuthService implements IAuthService {
   // reset password
 
   async resetPassword(data: ResetPasswordDto): Promise<void> {
-    const token = await userService.findUserByEmail(data.token);
+    const hashedToken = hashToken(data.token);
+    const resetToken = await prisma.passwordResetToken.findUnique({
+      where: { tokenHash: hashedToken },
+    });
+    if (!resetToken) {
+      authServiceLog.warn("Invalid password reset token");
+      throw new AppError("Invalid password reset token", 400);
+    }
+
+    if (resetToken.expiresAt < new Date()) {
+      authServiceLog.warn("Password reset token has expired");
+
+      throw new AppError("Password reset token has expired", 400);
+    }
+
+    const hashedPassword = Guards.hashPassword(data.newPassword);
+
+    await prisma.user.update({
+      where: {
+        id: resetToken.userId,
+      },
+      data: {
+        password: hashedPassword,
+      },
+    });
+
+    await prisma.passwordResetToken.delete({
+      where: {
+        id: resetToken.id,
+      },
+    });
+    authServiceLog.info(
+      `Password reset successful for user ${resetToken.userId}`,
+    );
     //
   }
 
+  // change password
   async changePassword(userId: string, data: ChangePasswordDto): Promise<void> {
     const loggedInUser = await userService.findUserById(userId);
 
@@ -128,18 +207,22 @@ class AuthService implements IAuthService {
       throw new AppError("Invalid password match", 400);
     }
 
-    if(data.newPassword === data.currentPassword){
-      authServiceLog.warn("New password cannot be the same as current password")
-      throw new AppError("New password cannot be the same as current password",400)
+    if (data.newPassword === data.currentPassword) {
+      authServiceLog.warn(
+        "New password cannot be the same as current password",
+      );
+      throw new AppError(
+        "New password cannot be the same as current password",
+        400,
+      );
     }
 
-    const hashPassword =  Guards.hashPassword(data.newPassword)
+    const hashPassword = Guards.hashPassword(data.newPassword);
 
     await prisma.user.update({
-      where:{id:userId},
-      data:{password:hashPassword}
-    })
-
+      where: { id: userId },
+      data: { password: hashPassword },
+    });
   }
 }
 
