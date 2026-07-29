@@ -16292,10 +16292,10 @@ export namespace Prisma {
 
   export type CourseWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    title?: string
     AND?: CourseWhereInput | CourseWhereInput[]
     OR?: CourseWhereInput[]
     NOT?: CourseWhereInput | CourseWhereInput[]
-    title?: StringFilter<"Course"> | string
     description?: StringFilter<"Course"> | string
     price?: IntFilter<"Course"> | number
     status?: EnumCourseStatusFilter<"Course"> | $Enums.CourseStatus
@@ -16306,7 +16306,7 @@ export namespace Prisma {
     instructorProfile?: XOR<InstructorProfileScalarRelationFilter, InstructorProfileWhereInput>
     modules?: ModuleListRelationFilter
     enrollments?: EnrollmentListRelationFilter
-  }, "id">
+  }, "id" | "title">
 
   export type CourseOrderByWithAggregationInput = {
     id?: SortOrder

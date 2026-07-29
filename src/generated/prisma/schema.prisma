@@ -142,7 +142,7 @@ model Trade {
 
 model Course {
   id            String       @id @default(uuid())
-  title         String
+  title         String       @unique
   description   String
   price         Int
   status        CourseStatus @default(DRAFT)
