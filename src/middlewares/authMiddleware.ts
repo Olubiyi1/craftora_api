@@ -1,7 +1,7 @@
 import { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import AppError from "../errorHandlers/appError";
-import Guards, { JwtPayload } from "../guards/guards";
+import Guards,{JwtPayload} from "../guards/guards";
 import prisma from "../config/prisma";
 import { createLabel } from "../utils/labels";
 import { AuthRequest } from "../types/express";
@@ -24,7 +24,7 @@ export const authMiddleware = async (
 
     let decoded: JwtPayload;
     try {
-      decoded = Guards.verifyAccesToken(token);
+      decoded = Guards.verifyAccessToken(token);
     } catch (err) {
       if (err instanceof jwt.TokenExpiredError) {
         next(new AppError("Session expired. Please log in again", 401));
@@ -43,7 +43,7 @@ export const authMiddleware = async (
       id: user.id,
       email: user.email,
       role: user.role,
-      emailVerifiedAt: user.emailVerifiedAt ?? undefined,
+      emailVerifiedAt: user.verifiedAt ?? undefined,
     };
 
     authLog.info("User authenticated", { userId: user.id });
@@ -51,4 +51,4 @@ export const authMiddleware = async (
   } catch (err) {
     next(err);
   }
-};
+}

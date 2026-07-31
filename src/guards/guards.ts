@@ -2,20 +2,29 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import config from "../config/config";
+import { Role } from "../generated/prisma";
 
 export interface TokenPayload {
   id: string;
   email: string;
-  role: string;
+  role: Role;
 }
 
 export interface AccessTokenPayload {
   id: string;
   email: string;
-  role: string;
+  role: Role;
   iat: number;
   exp: number;
 }
+
+export interface JwtPayload{
+  id:string,
+  role:Role,
+  email:string
+
+}
+
 
 interface RefreshTokenPayload {
   sub: string;

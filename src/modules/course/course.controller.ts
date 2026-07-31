@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { asyncHandler } from "../errorHandlers/asyncHanlder";
-import ResponseHandler from "../utils/responseHandler";
-import { createLabel } from "../utils/labels";
-import { AuthRequest } from "../types/express";
+import { asyncHandler } from "../../errorHandlers/asyncHanlder";
+import ResponseHandler from "../../utils/responseHandler";
+import { createLabel } from "../../utils/labels";
+import { AuthRequest } from "../../types/express";
 import courseService from "./course.service";
 
 const courseControllerLog = createLabel("COURSE_CONTROLLER_LOG");

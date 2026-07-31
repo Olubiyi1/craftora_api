@@ -1,4 +1,4 @@
-import { Course } from "../../generated/prisma";
+import { Course } from "../../../generated/prisma";
 import { CreateCourseDto } from "../dto/createCourse.dto";
 import { UpdateCourseDto } from "../dto/updateCourseDto";
 

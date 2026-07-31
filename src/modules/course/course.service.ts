@@ -1,10 +1,10 @@
 import { ICourseService } from "./contracts/course.contract";
 import { UpdateCourseDto } from "./dto/updateCourseDto";
 import { CreateCourseDto } from "./dto/createCourse.dto";
-import AppError from "../errorHandlers/appError";
-import { Course } from "../generated/prisma";
-import prisma from "../config/prisma";
-import { createLabel } from "../utils/labels";
+import AppError from "../../errorHandlers/appError";
+import { Course } from "../../generated/prisma";
+import prisma from "../../config/prisma";
+import { createLabel } from "../../utils/labels";
 
 const courseServiceLog = createLabel("COURSE_SERVICE_LOG");
 

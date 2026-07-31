@@ -3,7 +3,7 @@ import AppError from "../errorHandlers/appError";
 import { Role } from "../generated/prisma/enums";
 import { AuthRequest } from "../types/express";
 
-export const restrictTo = (allowedRoles:Role[])=>{
+export const restrictTo = (...allowedRoles:Role[])=>{
     return (req:AuthRequest,res:Response,next:NextFunction):void=>{
         if(!req.user){
             next(new AppError("You are not logged in",401));

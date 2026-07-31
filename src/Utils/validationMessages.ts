@@ -62,4 +62,10 @@ export const validationMessages = {
     "string.empty": "Confirm password cannot be empty",
     "any.only": "Passwords do not match",
   },
+
+  tradeName:{
+    "any.required":"Please enter a trade",
+    "string.empty":"Trade cannot be empty",
+    "string.base":"Trade must be a string"
+  }
 };

@@ -1,6 +1,6 @@
-import UserService from "./modules/user/user.service";
-import { CreateUserDto } from "./modules/user/dto/createUser.dto";
-import { SafeUser } from "./modules/user/user.service";
+import UserService from "./user.service";
+import { CreateUserDto } from "./dto/createUser.dto";
+import { SafeUser } from "./user.service";
 
 
 
