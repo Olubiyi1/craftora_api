@@ -2,11 +2,11 @@ import { createLabel } from "../../utils/labels";
 import AppError from "../../errorHandlers/appError";
 import { IAuthService } from "./contracts/auth.contract";
 import { RegisterDto } from "./dto/register.dto";
-import { SafeUser } from "../user/user.service";
+import userService, { SafeUser } from "../user/user.service";
 import { Tokens } from "./auth.tokens.types";
 import { LoginDto } from "./dto/login.dto";
 import { ResetPasswordDto } from "./dto/resetPassword.dto";
-import UserService from "../user/user.service";
+// import UserService from "../user/user.service";
 import Guards from "../../guards/guards";
 import { generateToken, hashToken } from "../../helpers/token.helper";
 import prisma from "../../config/prisma";
@@ -16,7 +16,7 @@ import { TokenPayload } from "../../guards/guards";
 
 const authServiceLog = createLabel("AUTH_SERVICE_LOG");
 // creating a new instance if UserService
-const userService = new UserService();
+// const userService = new UserService();
 
 class AuthService implements IAuthService {
   async register(data: RegisterDto): Promise<SafeUser> {

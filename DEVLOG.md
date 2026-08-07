@@ -18,3 +18,4 @@ did monolitic modular architecture
 separated auth from user as standalone
 implement dtos and contracts
 typescript doesnt auto remove the password cos i defined safeuser
+i created a test mock file to solve prismamock issues
