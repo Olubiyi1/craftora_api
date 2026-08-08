@@ -64,7 +64,7 @@ class AuthService implements IAuthService {
 
     if (!passwordMatch) {
       authServiceLog.warn("Invalid email or password");
-      throw new AppError(`Invalid Email or Password`, 400);
+      throw new AppError("Invalid email or password", 400);
     }
 
     // if (existingUser.isVerified === null) {
@@ -80,8 +80,7 @@ class AuthService implements IAuthService {
       role: safeuser.role,
     };
     const accessToken = Guards.createAccessToken(payload);
-    const { refreshToken, hashedRefreshToken } =
-      Guards.createRefreshToken(payload);
+    const { refreshToken, hashedRefreshToken } =Guards.createRefreshToken(payload);
 
     // single refresh token approach
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
